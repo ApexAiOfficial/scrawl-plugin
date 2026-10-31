@@ -28,10 +28,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      CLAUDE_CONFIG_DIR: ${{ runner.temp }}/claude
       DISABLE_AUTOUPDATER: "1"
       DISABLE_TELEMETRY: "1"
     steps:
+      - name: Isolated claude home (the runner context is not available in job-level env)
+        run: echo "CLAUDE_CONFIG_DIR=$RUNNER_TEMP/claude" >> "$GITHUB_ENV"
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
           persist-credentials: false
@@ -90,9 +91,9 @@ jobs:
     name: Codex marketplace, install and MCP auth
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      CODEX_HOME: ${{ runner.temp }}/codex
     steps:
+      - name: Isolated codex home (the runner context is not available in job-level env)
+        run: echo "CODEX_HOME=$RUNNER_TEMP/codex" >> "$GITHUB_ENV"
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
           persist-credentials: false
