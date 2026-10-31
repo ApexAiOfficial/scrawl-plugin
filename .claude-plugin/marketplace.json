@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "apexai-scrawl",
+  "owner": {
+    "name": "ApexAiOfficial",
+    "email": "support@apexaiofficial.com"
+  },
+  "metadata": {
+    "description": "Scrawl for Claude Code: scrape, map, crawl, extract and query the web through your Scrawl server"
+  },
+  "plugins": [
+    {
+      "name": "scrawl",
+      "source": "./plugins/scrawl",
+      "description": "Scrape pages to Markdown or JSON, map sites, crawl into versioned datasets, extract with a schema, ask cited questions and download files with Scrawl, over its MCP server or the scrawl CLI.",
+      "category": "productivity"
+    }
+  ]
+}

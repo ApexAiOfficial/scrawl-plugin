@@ -1,0 +1,159 @@
+name: Validate
+
+# GitHub-hosted runners only: this is a public repository and must never run on self-hosted machines.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The host CLIs the plugin is verified against. Raise them deliberately, after a local check.
+  CLAUDE_CODE_VERSION: "2.1.282"
+  CODEX_VERSION: "0.157.1"
+  # The scrawl CLI whose parser checks every command in the skills (PyPI later).
+  SCRAWL_SDK: "git+https://github.com/ApexAiOfficial/scrawl-sdk@728ac6cf8015c0d6812c1e46c954de60a19474be#subdirectory=python"
+  SKILLS: "scrawl setup scrape map crawl extract ask datasets downloads"
+
+jobs:
+  claude-code:
+    name: Claude Code manifests and install
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLAUDE_CONFIG_DIR: ${{ runner.temp }}/claude
+      DISABLE_AUTOUPDATER: "1"
+      DISABLE_TELEMETRY: "1"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
+        with:
+          node-version: "22"
+      - name: Install Claude Code ${{ env.CLAUDE_CODE_VERSION }}
+        run: |
+          npm install --global "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+          claude --version | grep -F "${CLAUDE_CODE_VERSION}"
+          mkdir -p "$CLAUDE_CONFIG_DIR"
+      - name: validate --strict (marketplace and plugin)
+        run: |
+          claude plugin validate --strict .
+          claude plugin validate --strict ./plugins/scrawl
+      - name: Marketplace add and plugin install from this checkout
+        run: |
+          claude plugin marketplace add "$GITHUB_WORKSPACE"
+          claude plugin install scrawl@apexai-scrawl
+      - name: The MCP server resolves from userConfig, and stays off without a key
+        run: |
+          claude plugin list --json > "$RUNNER_TEMP/list.json"
+          python3 - <<'PY'
+          import json, os
+          [plugin] = [p for p in json.load(open(os.environ["RUNNER_TEMP"] + "/list.json")) if p["id"] == "scrawl@apexai-scrawl"]
+          assert plugin["enabled"], plugin
+          assert plugin["mcpServers"] == {"scrawl": {"type": "http", "url": "${user_config.mcp_url}",
+                                                     "headers": {"Authorization": "Bearer ${user_config.api_key}"}}}
+          print("scrawl MCP server: url and bearer header from userConfig")
+          PY
+          claude mcp list > "$RUNNER_TEMP/mcp.txt" 2>&1 || true
+          cat "$RUNNER_TEMP/mcp.txt"
+          ! grep -q "plugin:scrawl" "$RUNNER_TEMP/mcp.txt"
+      - name: Every skill is part of the plugin
+        run: |
+          claude plugin details scrawl@apexai-scrawl | tee "$RUNNER_TEMP/details.txt"
+          for skill in $SKILLS; do grep -Eq "Skills \(9\).*\b${skill}\b" "$RUNNER_TEMP/details.txt" || { echo "missing skill: $skill"; exit 1; }; done
+
+      - name: The configured key reaches the configured URL as a bearer token (stand-in MCP server)
+        env:
+          PROBE_KEY: scrawl-ci-probe-key
+        run: |
+          python3 tools/mcp_probe.py --port 18765 --key "$PROBE_KEY" --log "$RUNNER_TEMP/probe.jsonl" >/dev/null 2>&1 &
+          probe=$!
+          python3 -c "import socket, time
+          for _ in range(40):
+              try: socket.create_connection(('127.0.0.1', 18765), 1).close(); break
+              except OSError: time.sleep(0.25)"
+          claude plugin install scrawl@apexai-scrawl --config mcp_url=http://127.0.0.1:18765/mcp --config "api_key=$PROBE_KEY"
+          claude mcp get plugin:scrawl:scrawl | tee "$RUNNER_TEMP/get.txt"
+          grep -q "Connected" "$RUNNER_TEMP/get.txt"
+          kill "$probe"
+          python3 tools/mcp_probe.py --check "$RUNNER_TEMP/probe.jsonl"
+
+  codex:
+    name: Codex marketplace, install and MCP auth
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CODEX_HOME: ${{ runner.temp }}/codex
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
+        with:
+          node-version: "22"
+      - name: Install Codex CLI ${{ env.CODEX_VERSION }}
+        run: |
+          npm install --global "@openai/codex@${CODEX_VERSION}"
+          codex --version | grep -F "${CODEX_VERSION}"
+          mkdir -p "$CODEX_HOME"
+      - name: Marketplace add and plugin add from this checkout
+        run: |
+          codex plugin marketplace add .
+          codex plugin add scrawl@apexai-scrawl --json
+      - name: codex mcp list shows the server with bearer auth from SCRAWL_API_KEY
+        run: |
+          codex mcp list --json | tee "$RUNNER_TEMP/mcp.json"
+          python3 - <<'PY'
+          import json, os
+          [server] = [s for s in json.load(open(os.environ["RUNNER_TEMP"] + "/mcp.json")) if s["name"] == "scrawl"]
+          transport = server["transport"]
+          assert server["enabled"] and server["auth_status"] == "bearer_token", server
+          assert transport["type"] == "streamable_http", transport
+          assert transport["url"] == "http://127.0.0.1:8000/mcp", transport
+          assert transport["bearer_token_env_var"] == "SCRAWL_API_KEY", transport
+          print("scrawl MCP server: bearer token from SCRAWL_API_KEY")
+          PY
+      - name: Codex lists every skill
+        run: |
+          codex debug prompt-input "hello" > "$RUNNER_TEMP/prompt.json"
+          for skill in $SKILLS; do grep -q "scrawl:${skill}:" "$RUNNER_TEMP/prompt.json" || { echo "missing skill: scrawl:$skill"; exit 1; }; done
+
+      - name: Codex sends SCRAWL_API_KEY to the plugin's URL as a bearer token (stand-in MCP server)
+        env:
+          SCRAWL_API_KEY: scrawl-ci-probe-key
+        run: |
+          python3 tools/mcp_probe.py --port 8000 --key "$SCRAWL_API_KEY" --log "$RUNNER_TEMP/probe.jsonl" >/dev/null 2>&1 &
+          probe=$!
+          python3 -c "import socket, time
+          for _ in range(40):
+              try: socket.create_connection(('127.0.0.1', 8000), 1).close(); break
+              except OSError: time.sleep(0.25)"
+          codex debug prompt-input "hello" > /dev/null
+          kill "$probe"
+          python3 tools/mcp_probe.py --check "$RUNNER_TEMP/probe.jsonl"
+
+  tests:
+    name: Skills against the CLI parser and the MCP contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Install pytest and the scrawl CLI
+        run: python -m pip install "pytest>=8" "scrawl-sdk @ ${SCRAWL_SDK}"
+      - name: Tests (the CLI is required here, never skipped)
+        env:
+          SCRAWL_PLUGIN_REQUIRE_CLI: "1"
+        run: python -m pytest tests

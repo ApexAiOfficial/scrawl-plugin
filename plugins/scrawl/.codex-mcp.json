@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "scrawl": {
+      "type": "http",
+      "url": "http://127.0.0.1:8000/mcp",
+      "bearer_token_env_var": "SCRAWL_API_KEY"
+    }
+  }
+}

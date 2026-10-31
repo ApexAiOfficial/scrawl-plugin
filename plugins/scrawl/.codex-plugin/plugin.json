@@ -1,0 +1,32 @@
+{
+  "name": "scrawl",
+  "version": "0.1.0",
+  "description": "Scrape pages to Markdown or JSON, map sites, crawl into versioned datasets, extract with a schema, ask cited questions and download files with Scrawl, over its MCP server or the scrawl CLI.",
+  "author": {
+    "name": "ApexAiOfficial",
+    "email": "support@apexaiofficial.com",
+    "url": "https://github.com/ApexAiOfficial"
+  },
+  "homepage": "https://github.com/ApexAiOfficial/scrawl-plugin",
+  "repository": "https://github.com/ApexAiOfficial/scrawl-plugin",
+  "license": "Apache-2.0",
+  "keywords": ["scraping", "web", "markdown", "extraction", "crawl", "datasets", "mcp"],
+  "skills": "./skills/",
+  "mcpServers": "./.codex-mcp.json",
+  "interface": {
+    "displayName": "Scrawl",
+    "shortDescription": "Read the web through your Scrawl server",
+    "longDescription": "Scrape a page to clean Markdown or schema-checked JSON, map a site, crawl into versioned datasets, query and diff them, ask cited questions and download a job's files. Connects to your own Scrawl server's MCP endpoint with your API key, or drives the scrawl CLI.",
+    "developerName": "ApexAiOfficial",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/ApexAiOfficial/scrawl-plugin",
+    "defaultPrompt": [
+      "Scrape https://shop.example to Markdown with Scrawl",
+      "Map the pages of https://shop.example with Scrawl",
+      "List my Scrawl datasets and what changed in the latest version"
+    ],
+    "composerIcon": "./assets/scrawl.svg",
+    "logo": "./assets/scrawl.svg"
+  }
+}

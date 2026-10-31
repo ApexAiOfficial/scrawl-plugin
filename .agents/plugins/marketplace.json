@@ -1,0 +1,20 @@
+{
+  "name": "apexai-scrawl",
+  "interface": {
+    "displayName": "Scrawl by ApexAi"
+  },
+  "plugins": [
+    {
+      "name": "scrawl",
+      "source": {
+        "source": "local",
+        "path": "./plugins/scrawl"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

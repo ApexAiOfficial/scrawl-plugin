@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "scrawl": {
+      "type": "http",
+      "url": "${user_config.mcp_url}",
+      "headers": {
+        "Authorization": "Bearer ${user_config.api_key}"
+      }
+    }
+  }
+}
