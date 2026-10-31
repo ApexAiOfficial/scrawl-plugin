@@ -5,7 +5,7 @@ and versions follow [Semantic Versioning](https://semver.org/). The version in
 `plugins/scrawl/.claude-plugin/plugin.json` and `plugins/scrawl/.codex-plugin/plugin.json` is the plugin's
 version in both hosts.
 
-## Unreleased: 0.1.0
+## 0.1.0 (2026-10-31)
 
 First public version.
 
@@ -22,6 +22,7 @@ First public version.
   argument the skills name against it, and every `scrawl` command against the real CLI parser.
 - CI on GitHub-hosted runners: strict manifest validation with a pinned Claude Code, an install check with
   a pinned Codex CLI, and the contract tests.
+- The `scrawl` CLI the skills and CI use is pinned to the SDK's `py-v0.1.0` release.
 - Codex guide: scripted runs (`codex exec` needs the Scrawl tools approved for the run) and a warning that
   `codex mcp add` and `codex mcp remove` rewrite the whole `config.toml`.
 
