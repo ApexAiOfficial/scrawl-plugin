@@ -38,6 +38,7 @@ claude plugin marketplace add ApexAiOfficial/scrawl-plugin
 claude plugin install scrawl@apexai-scrawl
 ```
 
+To pin this release, add the tag: `claude plugin marketplace add ApexAiOfficial/scrawl-plugin#v0.1.0`.
 Inside a session the same steps are `/plugin marketplace add ApexAiOfficial/scrawl-plugin` and
 `/plugin install scrawl@apexai-scrawl`. Then run `/plugin configure scrawl@apexai-scrawl` to set:
 
@@ -57,6 +58,8 @@ in [docs/claude-code.md](docs/claude-code.md).
 codex plugin marketplace add ApexAiOfficial/scrawl-plugin
 codex plugin add scrawl@apexai-scrawl
 ```
+
+To pin this release: `codex plugin marketplace add ApexAiOfficial/scrawl-plugin --ref v0.1.0`.
 
 Codex sends the key from the `SCRAWL_API_KEY` environment variable, so export it before starting Codex. The
 plugin points at `http://127.0.0.1:8000/mcp`; to use another server, override the entry under the same name:

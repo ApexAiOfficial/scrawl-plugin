@@ -3,7 +3,7 @@
 ## Static checks (CI runs these on every push and pull request)
 
 ```bash
-python -m pip install pytest "git+https://github.com/ApexAiOfficial/scrawl-sdk#subdirectory=python"
+python -m pip install pytest "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.0#subdirectory=python"
 SCRAWL_PLUGIN_REQUIRE_CLI=1 python -m pytest tests
 ```
 
