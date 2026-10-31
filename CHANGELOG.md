@@ -22,6 +22,8 @@ First public version.
   argument the skills name against it, and every `scrawl` command against the real CLI parser.
 - CI on GitHub-hosted runners: strict manifest validation with a pinned Claude Code, an install check with
   a pinned Codex CLI, and the contract tests.
+- Codex guide: scripted runs (`codex exec` needs the Scrawl tools approved for the run) and a warning that
+  `codex mcp add` and `codex mcp remove` rewrite the whole `config.toml`.
 
 ### Changed (from the earlier Claude Code plugin)
 - The `/scrawl:scrape` and `/scrawl:map` commands are now skills of the same names, so they also work in

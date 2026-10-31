@@ -51,6 +51,10 @@ Keep `bearer_token_env_var` in the override: your entry replaces the plugin's en
 is sent. `codex mcp remove scrawl` returns to the plugin's default. A project's `.codex/config.toml` can carry
 the same entry, but Codex applies project configuration only in projects you have marked as trusted.
 
+`codex mcp add` and `codex mcp remove` rewrite the whole `config.toml`, not just the `scrawl` table. In our
+test with Codex 0.157.1, an add followed by a remove also dropped the `args` of another MCP server in the same
+file. Copy `config.toml` before using them, or edit the `[mcp_servers.scrawl]` table by hand instead.
+
 ## Switch the MCP server off
 
 While `SCRAWL_API_KEY` is set, Codex sends it to the plugin's MCP URL every time it starts, whatever answers
@@ -77,6 +81,19 @@ scrawl doctor
 ```
 
 Codex runs commands in its sandbox; allow network access for `scrawl` commands when Codex asks.
+
+## Scripted runs (`codex exec`)
+
+`codex exec` has nobody to approve an MCP tool call. In our tests with Codex 0.157.1, a run that had not
+pre-approved the Scrawl tools made no call that reached the server. Approve them for that run only:
+
+```bash
+codex exec -c mcp_servers.scrawl.default_tools_approval_mode="approve" "Scrape https://docs.example/ with Scrawl"
+```
+
+Every Scrawl tool then runs without asking, under the key in `SCRAWL_API_KEY`, so give a scripted run a key
+with only the scopes it needs. The same setting in `config.toml` applies to every session, interactive ones
+included; prefer the per-run flag.
 
 ## Skills
 
