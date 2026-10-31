@@ -62,7 +62,7 @@ for the internet, and never set it in a command).
 
 If the CLI is missing, tell the user how to install it and let them decide: the `scrawl` command ships with
 the Scrawl Python SDK, installed from its repository, for example
-`pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk#subdirectory=python"` (or `pip install` of the
+`pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.0#subdirectory=python"` (or `pip install` of the
 same address inside a virtual environment, not into the user's project). Until the SDK's own documentation
 names a PyPI package, install it only from that repository; a PyPI package named `scrawl` is an unrelated
 project. Ask before installing anything.

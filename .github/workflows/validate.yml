@@ -18,8 +18,8 @@ env:
   # The host CLIs the plugin is verified against. Raise them deliberately, after a local check.
   CLAUDE_CODE_VERSION: "2.1.282"
   CODEX_VERSION: "0.157.1"
-  # The scrawl CLI whose parser checks every command in the skills (PyPI later).
-  SCRAWL_SDK: "git+https://github.com/ApexAiOfficial/scrawl-sdk@728ac6cf8015c0d6812c1e46c954de60a19474be#subdirectory=python"
+  # The scrawl CLI whose parser checks every command in the skills: scrawl-sdk py-v0.1.0 (PyPI later).
+  SCRAWL_SDK: "git+https://github.com/ApexAiOfficial/scrawl-sdk@19aebd71d4e90ab25507f41ee109b213a388971b#subdirectory=python"
   SKILLS: "scrawl setup scrape map crawl extract ask datasets downloads"
 
 jobs:
