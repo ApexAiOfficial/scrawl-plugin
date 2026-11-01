@@ -5,6 +5,13 @@ and versions follow [Semantic Versioning](https://semver.org/). The version in
 `plugins/scrawl/.claude-plugin/plugin.json` and `plugins/scrawl/.codex-plugin/plugin.json` is the plugin's
 version in both hosts.
 
+## Unreleased
+
+### Changed
+- The vendored MCP tool contract is re-synced from scrawl-sdk (contract digest `sha256:36eed387…`): Scrawl's tool
+  descriptions now call the deployment ApexAi runs for one customer a "dedicated deployment". Wording only: no
+  tool, argument or skill changes.
+
 ## 0.1.0 (2026-10-31)
 
 First public version.
