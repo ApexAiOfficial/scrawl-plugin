@@ -5,11 +5,11 @@ description: This skill should be used when the user asks "what can Scrawl do", 
 
 # Scrawl overview
 
-Scrawl turns web pages into clean Markdown or schema-checked JSON through a policed fetch: the server enforces
+Scrawl turns web pages into clean Markdown or schema-checked JSON through a policed fetch: Scrawl enforces
 robots.txt, network and domain policy, the key's permissions and credits, and size and time limits. It also
 runs crawls into versioned datasets that can be queried, diffed, searched and asked questions.
 
-## Two routes to the same server
+## Two routes to the same service
 
 | Route | What it is | Credentials |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ local install, structured results, and the key never passes through the shell. U
 server is not connected, and for the work only the CLI does: writing downloaded files to disk, the setup
 check (`scrawl doctor`), and managing the user's AI provider profiles. Use one route per step.
 
-The MCP server lists only the tools the key's scopes allow, and an operator can limit it to read-only tools.
+The MCP server lists only the tools the key's scopes allow, and it can be limited to read-only tools.
 When the tool a step needs is missing while other Scrawl tools are listed, use the CLI for that step (it checks
 the same scopes), or tell the user which scope the key lacks. When neither route works, load the **setup**
 skill.
@@ -39,7 +39,7 @@ skill.
 | Rows that match conditions, or what changed between two crawls | dataset query, fields, diff | datasets |
 | A page's images, documents or data files, or a job's raw files | assets, artifacts | downloads |
 
-A crawl runs a crawl target the server operator defined; it does not take an arbitrary URL. To collect pages
+A crawl runs one of the crawl targets the key may use; it does not take an arbitrary URL. To collect pages
 from a site that has no crawl target, map the site and scrape the relevant pages in batches of up to 20.
 
 ## Cost, limits and quotas
@@ -48,8 +48,8 @@ from a site that has no crawl target, map the site and scrape the relevant pages
   JSON scrapes (a schema or an instruction), extract, ask and dataset extraction run on the user's AI provider
   profile (bring-your-own AI), spend the user's tokens, and need the `ai:use` scope. Prefer Markdown when the
   user only needs to read a page.
-- **Hosted accounts spend credits;** self-hosted servers are unmetered. Check with `apex_scrapy_credit_balance`
-  or `scrawl balance`. Asset extraction holds its estimate first: quote it and get the user's agreement before
+- **Metered accounts spend credits.** Check with `apex_scrapy_credit_balance` or `scrawl balance` (an
+  unmetered account says so). Asset extraction holds its estimate first: quote it and get the user's agreement before
   starting one.
 - **Limits per call:** a batch takes 1 to 20 URLs (run 4 at a time); a map returns at most 500 URLs; a server
   wait lasts at most 60 seconds per call; a crawl is capped at 10,000 items and 1,800 seconds; an artifact read
@@ -58,8 +58,8 @@ from a site that has no crawl target, map the site and scrape the relevant pages
 - **Quotas:** each account has a cap on running or queued jobs (`too_many_active_jobs`) and, on the MCP
   server, a per-minute request allowance (`rate_limited`, with a Retry-After). Wait or cancel a job; never
   retry in a tight loop.
-- **Browser rendering** (`engine` browser, `--browser`) is slower, renders one page at a time, and exists only
-  on self-hosted servers whose operator enabled it (`browser_unavailable` otherwise). Use it only when a plain
+- **Browser rendering** (`engine` browser, `--browser`) is slower, renders one page at a time, and is available
+  only where ApexAi has enabled it (`browser_unavailable` otherwise). Use it only when a plain
   scrape comes back empty or without the content the user wants.
 - Scrawl does not bypass logins, paywalls or CAPTCHAs. Say so instead of retrying such a page.
 

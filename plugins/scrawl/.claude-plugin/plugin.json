@@ -18,20 +18,20 @@
     "api_key": {
       "type": "string",
       "title": "Scrawl API key",
-      "description": "Your ApexAPI key from the operator of your Scrawl server. Sent only as the Authorization: Bearer header to the MCP URL below, and kept in Claude Code's secure storage, not in settings.json.",
+      "description": "The ApexAPI key ApexAi issues for your Scrawl account. Sent only as the Authorization: Bearer header to the MCP URL below, and kept in Claude Code's secure storage, not in settings.json.",
       "sensitive": true,
       "required": true
     },
     "mcp_url": {
       "type": "string",
       "title": "Scrawl MCP URL",
-      "description": "The Streamable HTTP MCP endpoint of your Scrawl server, ending in /mcp. Use https:// for any host that is not this machine. Default: a self-hosted server on this machine.",
+      "description": "Scrawl's Streamable HTTP MCP endpoint for your account, ending in /mcp. Use https:// for any host that is not this machine. Default: a loopback address, because Scrawl's MCP server currently accepts only local connections.",
       "default": "http://127.0.0.1:8000/mcp"
     },
     "base_url": {
       "type": "string",
       "title": "Scrawl API base URL",
-      "description": "The ApexAPI base URL of the same server, used by the scrawl CLI as SCRAWL_BASE_URL. Default: a self-hosted server on this machine.",
+      "description": "Scrawl's ApexAPI base URL for your account, used by the scrawl CLI as SCRAWL_BASE_URL. Default: a loopback address.",
       "default": "http://127.0.0.1:8088"
     }
   }

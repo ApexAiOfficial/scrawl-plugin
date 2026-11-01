@@ -53,7 +53,7 @@ Use the browser engine only when a plain scrape comes back empty or without the 
 `apex_scrapy_scrape_url(url, engine, wait_for_ms)` with engine `browser` and, if the content appears late,
 wait_for_ms up to 10000; on the CLI, `scrawl scrape 'https://shop.example/app' --browser --wait-for 2000`.
 Follow up a browser scrape with `scrawl result job_123 --browser` so the CLI still checks that a browser
-rendered it. Browser rendering exists only on self-hosted servers whose operator enabled it:
+rendered it. Browser rendering is available only where ApexAi has enabled it:
 `browser_unavailable` means it is off, so say the page needs a browser render and stop retrying. A
 `too_many_active_jobs` whose `Fix:` says the browser renderer is busy clears in a few seconds.
 
@@ -80,8 +80,8 @@ rendered it. Browser rendering exists only on self-hosted servers whose operator
 | `too_many_active_jobs` (CLI exit 5) | The account's job limit is reached, or the browser renderer is busy | Wait for a job to finish, then continue; a busy renderer: retry in a few seconds |
 | `rate_limited` (CLI exit 5) | Too many requests a minute | MCP: wait the Retry-After seconds. CLI: it already retried; wait about a minute before one more try |
 | `insufficient_credits` (CLI exit 5) | The hosted balance cannot cover the job | Check `apex_scrapy_credit_balance` or `scrawl balance` and tell the user |
-| `browser_unavailable` (CLI exit 5) | The server cannot render in a browser now | Scrape with the static engine |
+| `browser_unavailable` (CLI exit 5) | Browser rendering is not available | Scrape with the static engine |
 | `unauthorized` or `forbidden` (CLI exit 3) | Key or scope problem | Load the setup skill |
-| `render_not_supported` (CLI exit 5) | A `--browser` result came from another engine | The server cannot render in a browser; use a plain scrape |
+| `render_not_supported` (CLI exit 5) | A `--browser` result came from another engine | Scrawl did not render it in a browser; use a plain scrape |
 
 Other codes: `../scrawl/references/errors.md`.

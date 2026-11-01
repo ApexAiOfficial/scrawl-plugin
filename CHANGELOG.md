@@ -12,9 +12,9 @@ First public version.
 ### Added
 - One repository serving Claude Code and OpenAI Codex: a marketplace for each host (`apexai-scrawl`) and the
   `scrawl` plugin with a manifest for each.
-- MCP connection to your Scrawl server over Streamable HTTP with a per-request bearer API key. Claude Code
+- MCP connection to Scrawl's MCP endpoint over Streamable HTTP with a per-request bearer API key. Claude Code
   takes the URL and key from the plugin's settings (`api_key` sensitive and required; `mcp_url` and
-  `base_url` with self-hosted defaults); Codex reads the key from `SCRAWL_API_KEY`.
+  `base_url` with loopback defaults); Codex reads the key from `SCRAWL_API_KEY`.
 - Nine skills shared by both hosts: `scrawl` (overview, cost, limits, untrusted content, error codes),
   `setup`, `scrape`, `map`, `crawl`, `extract`, `ask`, `datasets` and `downloads`. Each drives the MCP tools
   or the `scrawl` CLI and says which it prefers.

@@ -28,11 +28,12 @@ codex
 
 `codex mcp list` shows the server with `Bearer token` auth.
 
-## Point it at your own server
+## Point it at another endpoint
 
-The plugin connects to `http://127.0.0.1:8000/mcp`, a self-hosted Scrawl server on the same machine. Codex
-does not expand variables or plugin settings in a plugin's MCP URL, so to use another server, define an MCP
-server named `scrawl` in your own configuration; it replaces the plugin's entry of the same name:
+The plugin connects to `http://127.0.0.1:8000/mcp`, a loopback address (Scrawl's MCP server currently accepts
+only local connections). Codex does not expand variables or plugin settings in a plugin's MCP URL, so to use
+the MCP endpoint ApexAi provides for your account, define an MCP server named `scrawl` in your own
+configuration; it replaces the plugin's entry of the same name:
 
 ```bash
 codex mcp add scrawl --url https://scrawl.example/mcp --bearer-token-env-var SCRAWL_API_KEY
@@ -58,8 +59,8 @@ file. Copy `config.toml` before using them, or edit the `[mcp_servers.scrawl]` t
 ## Switch the MCP server off
 
 While `SCRAWL_API_KEY` is set, Codex sends it to the plugin's MCP URL every time it starts, whatever answers
-there. If you run no Scrawl MCP server on this machine (for example, you export `SCRAWL_API_KEY` only for the
-CLI against a remote server), switch the entry off in `config.toml` in your Codex home:
+there. If no Scrawl MCP endpoint answers at that URL (for example, you export `SCRAWL_API_KEY` only for the
+CLI), switch the entry off in `config.toml` in your Codex home:
 
 ```toml
 [mcp_servers.scrawl]
@@ -72,11 +73,11 @@ CLI. Remove the entry to switch the server back on.
 
 ## The CLI route
 
-The skills use the `scrawl` CLI for downloads, the setup check, AI provider profiles and servers whose MCP
+The skills use the `scrawl` CLI for downloads, the setup check, AI provider profiles, and whenever Scrawl's MCP
 endpoint is not reachable. It reads `SCRAWL_BASE_URL` and `SCRAWL_API_KEY` from the same environment:
 
 ```bash
-export SCRAWL_BASE_URL=https://scrawl.example
+export SCRAWL_BASE_URL=https://scrawl.example   # the ApexAPI endpoint ApexAi provides for your account
 scrawl doctor
 ```
 

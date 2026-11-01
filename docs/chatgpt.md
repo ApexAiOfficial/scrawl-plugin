@@ -50,7 +50,7 @@ private deployment only.
   install.
 - `.app.json`: added only once OpenAI issues an app ID for the listing; it is left out until then.
 - Claude Code's `.mcp.json`: the `mcp_url` default becomes the public URL; the bearer header and the
-  `api_key` setting can stay for self-hosted servers, or give way to Claude Code's own OAuth sign-in.
+  `api_key` setting can stay for API-key access, or give way to Claude Code's own OAuth sign-in.
 - Logos: the submission wants raster `logo` and `composerIcon` assets; the current icon is an SVG.
 - Nothing changes in the skills: they already avoid hooks, commands and host-specific arguments, which the
   portal would strip or reject.
@@ -90,4 +90,4 @@ dataset queries. What it would take:
 
 - **Codex** with this plugin: bearer key from `SCRAWL_API_KEY` ([codex.md](codex.md)).
 - **The OpenAI Agents SDK** can connect to a Streamable HTTP MCP server with an `Authorization` header, which
-  fits Scrawl's per-request key on the server's own machine. This repository does not test it.
+  fits Scrawl's per-request key, given a Scrawl MCP endpoint it can reach. This repository does not test it.

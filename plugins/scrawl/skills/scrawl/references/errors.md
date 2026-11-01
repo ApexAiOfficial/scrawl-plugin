@@ -11,7 +11,7 @@ Read this when a Scrawl MCP tool or `scrawl` command fails. The same server code
 | Code | HTTP | CLI exit | Meaning | What to do |
 | --- | --- | --- | --- | --- |
 | `unauthorized` | 401 | 3 | The API key is missing, invalid or revoked | Ask the user to set a valid key (setup skill); never guess or retry |
-| `forbidden` | 403 | 3 | The key lacks the scope this call needs, or the server refuses this feature for the account (for example a custom AI endpoint on a hosted server) | Name the operation; the user needs a key with that scope from the operator |
+| `forbidden` | 403 | 3 | The key lacks the scope this call needs, or Scrawl refuses this feature for the account (for example a custom AI endpoint on a hosted account) | Name the operation; the user needs a key with that scope from ApexAi |
 | `account_not_active` | 403 | 3 | The key's hosted account cannot act now (for example, suspended) | Tell the user; the account owner resolves it where the account is managed (the `Fix:` text says how); nothing to retry |
 | `bad_request` | 400 | 5 | Refused before any work started | Read the message; fix the request |
 | `dispatch_refused` | 400 | 5 | A gate refused the job (for example, a crawl target the key may not use) | List the allowed crawl targets; do not retry the same call |
@@ -28,9 +28,9 @@ Read this when a Scrawl MCP tool or `scrawl` command fails. The same server code
 | `internal_error` | 500 | 5 | Unexpected server failure | Retry once; then report it with the request ID |
 | `submission_failed` | 500 | 5 | An earlier submit with this idempotency key failed | List jobs, then submit again |
 | `ai_auth`, `ai_quota`, `ai_rate_limited`, `ai_refused`, `ai_timeout`, `ai_unavailable`, `ai_bad_request`, `ai_context_overflow`, `ai_malformed_output`, `ai_endpoint_forbidden`, `ai_provider_error` | 502 | 5 | The user's own AI provider failed | Report which (key, quota, limit, refusal, model, size); the user fixes the AI profile (setup skill) |
-| `unavailable` | 503 | 5 | Something the operation needs is not configured or not running, for example AI features turned off on this server (`apex_scrapy_ai_status` reports `enabled` false) | Retry later, or the operator enables it; AI features only the operator can turn on |
-| `browser_unavailable` | 503 | 5 | This server cannot render pages in a browser now | Scrape with the static engine instead |
-| `render_not_supported` | none | 5 | Raised by the CLI: `--browser` was asked for, but another engine rendered the result | The server does not support browser rendering; use a plain scrape |
+| `unavailable` | 503 | 5 | Something the operation needs is not configured or not running, for example AI features switched off (`apex_scrapy_ai_status` reports `enabled` false) | Retry later; AI features only ApexAi can turn on |
+| `browser_unavailable` | 503 | 5 | Browser rendering is not available | Scrape with the static engine instead |
+| `render_not_supported` | none | 5 | Raised by the CLI: `--browser` was asked for, but another engine rendered the result | Scrawl did not render it in a browser; use a plain scrape |
 
 The MCP server may also report `internal` (an unexpected failure; retry once) and `key_revoked` (use an active
 key).
@@ -43,7 +43,7 @@ key).
 | 401 | `invalid_token` | The key was not accepted | The user sets a valid key; there is no browser sign-in |
 | 429 | JSON-RPC error with `rate_limited` | Per-account requests-per-minute allowance used up | Wait the Retry-After seconds (about a minute if none is shown) |
 | 503 | `temporarily_unavailable` | The server cannot check keys right now | Retry after a few seconds |
-| none | connection refused or name not found | Nothing answers at the MCP URL | The server is not running there, or the URL is wrong (setup skill) |
+| none | connection refused or name not found | Nothing answers at the MCP URL | No Scrawl MCP endpoint answers at that URL: correct it, or use the CLI (setup skill) |
 
 ## Failed jobs
 
