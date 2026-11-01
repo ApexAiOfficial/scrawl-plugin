@@ -2,14 +2,14 @@
   "format": 1,
   "files": {
     "mcp_tools.json": {
-      "bytes": 119576,
-      "sha256": "656410ea711b577de452703990efc57f5a662b28e004f375e8d0e20f5dcdbda0"
+      "bytes": 119640,
+      "sha256": "fdc78f6c12c950eb15a135d5dbc361a1e915c418c60e45ff3d61fd95ec815d09"
     }
   },
   "source": {
     "repository": "https://github.com/ApexAiOfficial/scrawl-sdk",
     "path": "contracts/mcp_tools.json",
-    "contract_digest": "sha256:0891fc76af9dc410312deca74c985aa42d7fce8ae593e2d9c4e7f1aec4e82163",
+    "contract_digest": "sha256:36eed387f186c86e011df22ad9817507b299aedcbca4e2242b9a78b11f6b7e58",
     "backend_version": "unknown",
     "synced": "2026-10-31"
   }
