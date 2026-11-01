@@ -15,8 +15,8 @@
   "mcpServers": "./.codex-mcp.json",
   "interface": {
     "displayName": "Scrawl",
-    "shortDescription": "Read the web through your Scrawl server",
-    "longDescription": "Scrape a page to clean Markdown or schema-checked JSON, map a site, crawl into versioned datasets, query and diff them, ask cited questions and download a job's files. Connects to your own Scrawl server's MCP endpoint with your API key, or drives the scrawl CLI.",
+    "shortDescription": "Read the web through ApexAi's Scrawl service",
+    "longDescription": "Scrape a page to clean Markdown or schema-checked JSON, map a site, crawl into versioned datasets, query and diff them, ask cited questions and download a job's files. Connects to Scrawl's MCP endpoint with your API key, or drives the scrawl CLI.",
     "developerName": "ApexAiOfficial",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],

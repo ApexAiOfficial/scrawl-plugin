@@ -26,8 +26,8 @@ and offer to scrape the pages the user cares about.
   `scrawl job job_123 --wait 60` (exit 0 whatever the state: read `status`), and tell the user.
 - The result reports `sources` (how many URLs came from the page and from the sitemap), `truncated` (more
   URLs exist than `limit`) and `warnings` (for example, no sitemap). Mention them.
-- The browser engine renders only the start page (the sitemap is always fetched statically), exists only on
-  self-hosted servers whose operator enabled it, and is worth it only when the plain map finds almost no links.
+- The browser engine renders only the start page (the sitemap is always fetched statically), is available only
+  where ApexAi has enabled it, and is worth it only when the plain map finds almost no links.
 
 ## Present the result
 
@@ -56,7 +56,7 @@ and offer to scrape the pages the user cares about.
 | --- | --- | --- |
 | Status failed (CLI exit 1) | The start page could not be fetched; `error` and `warnings` say why | Report it; do not retry a `preflight_denied` site |
 | Pending (CLI exit 4) | The start page was still loading | Map once more with a 60-second wait, then report |
-| `browser_unavailable` (CLI exit 5) | The server cannot render in a browser now | Map with the static engine |
+| `browser_unavailable` (CLI exit 5) | Browser rendering is not available | Map with the static engine |
 | Very few URLs | The site builds links with JavaScript, or has no sitemap | Offer the browser engine if available, or scrape the start page's links |
 | `unauthorized` or `forbidden` (CLI exit 3) | Key or scope problem | Load the setup skill |
 | `rate_limited`, `too_many_active_jobs` (CLI exit 5) | A quota is reached, or the browser renderer is busy | Wait (about a minute; a busy renderer, a few seconds), then retry once |

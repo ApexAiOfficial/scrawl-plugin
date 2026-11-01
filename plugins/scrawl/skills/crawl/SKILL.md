@@ -5,7 +5,7 @@ description: This skill should be used when the user asks to "crawl a site into 
 
 # Crawl into a versioned dataset
 
-A crawl runs one **crawl target** (a spider or catalog entry the server operator defined) and publishes the
+A crawl runs one **crawl target** (a configured spider or catalog entry the key may run) and publishes the
 result as a new version of a dataset that can then be queried, diffed, searched and asked. It does not take
 an arbitrary URL: to collect pages from a site with no crawl target, map it (map skill) and scrape the pages in
 batches of up to 20 (scrape skill).
@@ -17,7 +17,7 @@ The CLI starts and follows crawls when the user already knows the target name.
 
 | Step | MCP tool | CLI |
 | --- | --- | --- |
-| 1. List the targets this key may run | `apex_scrapy_list_spiders()` | none: ask the user or the operator for the target name |
+| 1. List the targets this key may run | `apex_scrapy_list_spiders()` | none: ask the user for the target name |
 | 2. Start the crawl | `apex_scrapy_start_crawl(crawl_target, max_items, max_seconds)` | `scrawl crawl my-target --max-items 500 --max-seconds 600` |
 | 3. Follow it | `apex_scrapy_get_job(job_id, wait_seconds)` with wait_seconds 60 | `scrawl job job_123 --wait 60` |
 | 4. See the new version | `apex_scrapy_get_dataset(dataset_id)` | `scrawl datasets get ds_123` |
@@ -71,9 +71,9 @@ user's agreement.
 | --- | --- | --- |
 | `status` FAILED | The crawl ran and failed | Report the job's status and exit details; do not restart it unasked |
 | `status` PENDING or RUNNING | The wait ended first | Check again in a minute (`wait_seconds` 60, or `scrawl job job_123 --wait 60`) |
-| `dispatch_refused` (CLI exit 5) | The key may not run this target | List the allowed targets with `apex_scrapy_list_spiders()`, or ask the operator (the CLI cannot list them) |
+| `dispatch_refused` (CLI exit 5) | The key may not run this target | List the allowed targets with `apex_scrapy_list_spiders()`; the CLI cannot list them, so otherwise ask the user |
 | `too_many_active_jobs` (CLI exit 5) | The job limit is reached | Wait, or cancel a job with the user's agreement |
 | `insufficient_credits` (CLI exit 5) | The hosted balance is too low | Check `apex_scrapy_credit_balance` or `scrawl balance` and tell the user |
-| `forbidden` (CLI exit 3) | The key lacks `scrape:write` (or `jobs:read` to follow the job), or the server turned crawls off | Load the setup skill |
+| `forbidden` (CLI exit 3) | The key lacks `scrape:write` (or `jobs:read` to follow the job), or crawls are switched off | Load the setup skill |
 
 Other codes: `../scrawl/references/errors.md`.

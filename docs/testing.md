@@ -43,7 +43,7 @@ codex mcp list --json              # scrawl: http://127.0.0.1:8000/mcp, bearer_t
 codex debug prompt-input "hi"      # lists the skills as scrawl:scrape, scrawl:map, ...
 ```
 
-## Key delivery without a Scrawl server
+## Key delivery to a stand-in endpoint
 
 `tools/mcp_probe.py` is a stand-in MCP endpoint that only records whether each request carried the expected
 bearer token (never the token itself). CI uses it to prove that each host sends the configured key to the
@@ -65,10 +65,10 @@ kill %1
 
 Use a throwaway value like `probe-key` here, never a real key: `--config` puts it on the command line.
 
-## End-to-end runs against a real Scrawl server
+## End-to-end runs against Scrawl
 
-These make real model calls and real scrapes, so they run against a test server (for example a lab
-deployment on this machine) with a test key whose scopes cover the skill under test. Use isolated homes as
+These make real model calls and real scrapes. They are for ApexAi's maintainers, against a Scrawl test
+environment that ApexAi operates, with a test key whose scopes cover the skill under test. Use isolated homes as
 above; each needs its own Claude or Codex sign-in.
 
 **Claude Code**
@@ -93,7 +93,7 @@ codex exec "Use Scrawl to map https://lab.test/ and list its sections"
 **The CLI route** (both hosts): export `SCRAWL_BASE_URL` and `SCRAWL_API_KEY` before starting the agent, then
 ask for a download, for example "download the images from https://lab.test/gallery with Scrawl".
 
-For each run, confirm in the server's logs that the calls arrived under the test key's account, that a key
+For each run, confirm in Scrawl's logs that the calls arrived under the test key's account, that a key
 without a scope sees only the tools its scopes allow, and that the agent did not follow instructions planted
 in a test page.
 

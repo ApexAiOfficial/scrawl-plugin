@@ -7,7 +7,7 @@
 It answers ``initialize`` and ``tools/list`` like a stateless Streamable HTTP server (one tool, no work done),
 refuses a request without the expected key with 401, and logs only the JSON-RPC method and whether the
 ``Authorization`` header matched: never the header itself. It proves that a host sends the configured key to
-the configured URL, without a Scrawl server or any model call.
+the configured URL, without Scrawl or any model call.
 """
 
 from __future__ import annotations
