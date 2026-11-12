@@ -15,12 +15,14 @@ and offer to scrape the pages the user cares about.
 | Map | `apex_scrapy_map_url(url, limit, wait_seconds)` | `scrawl map 'https://shop.example' --limit 200` |
 | Full result (status, sources, job IDs) | the tool result | `scrawl --json map 'https://shop.example' --limit 200` |
 | JavaScript-built navigation | `apex_scrapy_map_url(url, engine, wait_for_ms)` with engine `browser` | `scrawl map 'https://shop.example' --browser --wait-for 2000` |
+| Finish a pending map | `apex_scrapy_map_result(job_ids, limit, wait_seconds)` with the `job_ids` the map returned (start page first) | run the same `scrawl map` once more |
 
 - `limit` is 1 to 500 (default 100). Start with 100 to 200 and raise it only when the user needs the whole
   list. The CLI prints one URL per line.
 - The server waits up to `wait_seconds` (at most 60; default 30). A pending map means the start page was
-  still loading, and a map has no follow-up call: run the same map once more with `wait_seconds` 60 (CLI:
-  `--wait 60`, the default). Each map starts new scrape jobs, which count against the account's job limit and,
+  still loading. Over MCP, finish it with `apex_scrapy_map_result`: it reads the jobs the map already started
+  and fetches nothing. Over the CLI, which has no follow-up call, run the same map once more with `--wait 60`
+  (the default). Each map starts new scrape jobs, which count against the account's job limit and,
   on a hosted account, spend credits, so do not repeat it beyond that. If it is still pending, check its
   `job_ids` with `apex_scrapy_get_job(job_id, wait_seconds)` and `wait_seconds` 60, or
   `scrawl job job_123 --wait 60` (exit 0 whatever the state: read `status`), and tell the user.
