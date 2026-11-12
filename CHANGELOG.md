@@ -5,7 +5,19 @@ and versions follow [Semantic Versioning](https://semver.org/). The version in
 `plugins/scrawl/.claude-plugin/plugin.json` and `plugins/scrawl/.codex-plugin/plugin.json` is the plugin's
 version in both hosts.
 
-## Unreleased
+## 0.1.1 (2026-11-12)
+
+### Added
+- The setup skill's step 4: the user's own proxy, which every Scrawl job needs before anything is fetched
+  (`scrawl proxy show|set|test`, with the URL from `SCRAWL_PROXY_URL` or stdin, never the conversation or a
+  command line). The overview skill routes proxy work to it, and `egress_required` now points there.
+
+### Changed
+- The vendored MCP tool contract is re-synced from scrawl-sdk 0.1.1 (contract digest `sha256:417e9fce…`).
+- The setup skill installs the CLI from `py-v0.1.1` (which has `scrawl proxy`), and says that `anthropic`, like
+  `deepseek`, has a server default model.
+
+## Earlier unreleased changes, shipped in 0.1.1
 
 ### Changed
 - The vendored MCP tool contract is re-synced from scrawl-sdk (contract digest `sha256:36eed387…`): Scrawl's tool
