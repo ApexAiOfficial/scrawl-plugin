@@ -15,7 +15,7 @@ Read this when a Scrawl MCP tool or `scrawl` command fails. The same server code
 | `account_not_active` | 403 | 3 | The key's hosted account cannot act now (for example, suspended) | Tell the user; the account owner resolves it where the account is managed (the `Fix:` text says how); nothing to retry |
 | `bad_request` | 400 | 5 | Refused before any work started | Read the message; fix the request |
 | `dispatch_refused` | 400 | 5 | A gate refused the job (for example, a crawl target the key may not use) | List the allowed crawl targets; do not retry the same call |
-| `egress_required` | 400 | 5 | The job needs a usable proxy and the key has none; nothing was sent | Tell the user the account needs a proxy before asset extraction |
+| `egress_required` | 400 | 5 | The job needs the user's own proxy, tested, and there is none (or it has not passed); nothing was sent | Load the **setup** skill, step 4: the user sets the proxy, then `scrawl proxy test` |
 | `insufficient_credits` | 402 | 5 | The hosted account cannot cover the job's credit hold | Show the balance; narrow the job or ask the user to add credits |
 | `not_found` | 404 | 5 | Unknown, or not owned by this key | List jobs or datasets to find the right ID; never guess IDs |
 | `conflict` | 409 | 5 | A request with the same idempotency key is still running | Wait, then check the job list |

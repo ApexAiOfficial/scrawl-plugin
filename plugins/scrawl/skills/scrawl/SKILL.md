@@ -31,6 +31,7 @@ skill.
 | The user wants | Operation | Skill |
 | --- | --- | --- |
 | Check that Scrawl is configured, or fix a connection or key problem | status, doctor | setup |
+| Register or test the user's proxy (every job needs one that passed a test) | `scrawl proxy` | setup |
 | One page, or up to 20 pages, as Markdown, links or HTML | scrape, batch | scrape |
 | The list of pages on a site | map | map |
 | A whole site or catalog as a versioned dataset | crawl a configured crawl target | crawl |
