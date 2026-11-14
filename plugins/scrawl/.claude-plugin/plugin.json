@@ -1,7 +1,7 @@
 {
   "name": "scrawl",
   "displayName": "Scrawl",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scrape pages to Markdown or JSON, map sites, crawl into versioned datasets, extract with a schema, ask cited questions and download files with Scrawl, over its MCP server or the scrawl CLI.",
   "author": {
     "name": "ApexAiOfficial",

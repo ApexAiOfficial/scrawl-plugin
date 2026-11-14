@@ -40,12 +40,13 @@ step 3.
 
 ```bash
 scrawl --version                 # is the CLI installed?
-scrawl doctor                    # base URL (and where it came from), TLS, reachability, API key; never prints the key
+scrawl doctor                    # base URL (and where it came from), TLS, reachability, API key, proxy; never prints the key
 scrawl --json doctor             # the same checks as JSON: {"ok": ..., "checks": [...]}
 scrawl balance                   # a first authenticated call; needs the credits:read scope
 ```
 
-`scrawl doctor` exits 0 when ready (a key without `jobs:read` is only a warning), 3 for a configuration
+`scrawl doctor` exits 0 when ready (a key without `jobs:read`, or a proxy that has not passed its test, is only a
+warning: see step 4), 3 for a configuration
 problem (no key, a refused key, an unusable base URL, a TLS failure) and 5 when the endpoint cannot be reached.
 Report the failing check by name. A 403 from `scrawl balance` means the key lacks `credits:read`, not that it
 is invalid.
@@ -62,7 +63,7 @@ for the internet, and never set it in a command).
 
 If the CLI is missing, tell the user how to install it and let them decide: the `scrawl` command ships with
 the Scrawl Python SDK, installed from its repository, for example
-`pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.0#subdirectory=python"` (or `pip install` of the
+`pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.1#subdirectory=python"` (or `pip install` of the
 same address inside a virtual environment, not into the user's project). Until the SDK's own documentation
 names a PyPI package, install it only from that repository; a PyPI package named `scrawl` is an unrelated
 project. Ask before installing anything.
@@ -107,7 +108,25 @@ enabled = false
 
 Restart Codex after any of these changes.
 
-## 4. Set up the user's AI provider (only for JSON, extract and ask)
+## 4. Register the user's proxy (needed before any job)
+
+Every Scrawl job leaves through the user's own proxy, and nothing is fetched until it has passed a test: until
+then every scrape, map, batch, crawl or asset job is refused with `egress_required`. `scrawl doctor` shows the
+proxy check; `scrawl proxy show` shows the proxy (credentials masked) and whether it is `usable`. The proxy URL
+(`scheme://user:pass@host:port`) is a credential: never ask for it in the conversation, never type it, and
+never put it on a command line. The user either exports `SCRAWL_PROXY_URL` before starting the session, or runs
+the `set` command in their own terminal and pipes the URL in (`--url-stdin`).
+
+```bash
+scrawl proxy show                               # the proxy and whether it is usable (404 when none is registered)
+scrawl proxy set --label "my provider"          # reads SCRAWL_PROXY_URL
+scrawl proxy test                               # one real HTTPS request through it; exit 1 if it fails
+```
+
+The endpoint must be a public address. A failed test names the reason (for example a provider that refused the
+credentials); tell the user, and do not retry it in a loop.
+
+## 5. Set up the user's AI provider (only for JSON, extract and ask)
 
 Scrawl runs JSON extraction and ask on the user's own AI provider account; the key needs the `ai:use` scope,
 and AI features must be switched on (otherwise these commands fail with `unavailable`, exit 5).
@@ -125,8 +144,9 @@ scrawl ai providers usage --days 7
 
 Scrawl 0.8.0 accepts the providers `deepseek`, `openai`, `openrouter`, `groq`, `mistral`, `xai`, `anthropic`
 and `custom` (an OpenAI-compatible endpoint given with `--base-url`; Scrawl refuses it for hosted accounts). Pass
-`--model` with the model the user names; only `deepseek` has a server default, and a missing model is
-refused with `invalid_request`. Never choose a model for the user.
+`--model` with the model the user names. Only `deepseek` and `anthropic` have a server default (used when
+`--model` is omitted); for the others a missing model is refused with `invalid_request`. Never choose a model
+for the user.
 
 ## Safety
 
@@ -152,6 +172,7 @@ refused with `invalid_request`. Never choose a model for the user.
 | CLI exit 3 with no key | `SCRAWL_API_KEY` is not in the environment | The user exports it and restarts the session |
 | CLI refuses an `http://` base URL | Plain HTTP to another host would expose the key | Use `https://` |
 | `unavailable` (CLI exit 5) from `scrawl ai providers` | AI features are switched off | Only ApexAi can turn them on |
-| `ai_*` errors | The AI provider profile is wrong or out of quota | Step 4, then `scrawl ai providers test main` |
+| `egress_required` (CLI exit 5) | No proxy, or it has not passed a test | Step 4: the user sets it, then `scrawl proxy test` |
+| `ai_*` errors | The AI provider profile is wrong or out of quota | Step 5, then `scrawl ai providers test main` |
 
 The full code table is in `../scrawl/references/errors.md` (the overview skill).
