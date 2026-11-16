@@ -31,6 +31,11 @@ as JSON, use the **extract** skill instead; for a site's page list, the **map** 
   final URL, HTTP status, job ID), for example `scrawl --json scrape 'https://shop.example'`.
 - Report the page `title` and `final_url` with the content. When `truncated` is true, say the page was cut at
   the server's size limit.
+- A settled result has an `outcome`: `ok`, `target_blocked` (the site refused the request through the user's
+  proxy: report `block_reason` and the `hint`, and wait `retry_after_s` when given), `target_error` (the site
+  answered with an error), `cancelled` or `pipeline_failed` (Scrawl's own failure, refunded automatically). A
+  block or a target error is charged: the proxy is the user's choice, and residential proxies are blocked far less
+  than datacenter ones. Never promise a refund for one. A batch reports its per-outcome counts in `outcomes`.
 
 ## Up to 20 pages
 
@@ -78,7 +83,7 @@ rendered it. Browser rendering is available only where ApexAi has enabled it:
 | Status failed (CLI exit 1) | The page could not be scraped; `error_code` says why (`fetch_failed`, `preflight_denied`, `job_timeout`) | Report the reason. Do not retry a `preflight_denied` page: policy blocks it |
 | Pending (CLI exit 4) | Still running at the deadline | Follow up with the job ID as above |
 | `too_many_active_jobs` (CLI exit 5) | The account's job limit is reached, or the browser renderer is busy | Wait for a job to finish, then continue; a busy renderer: retry in a few seconds |
-| `rate_limited` (CLI exit 5) | Too many requests a minute | MCP: wait the Retry-After seconds. CLI: it already retried; wait about a minute before one more try |
+| `rate_limited` (CLI exit 5) | Too many requests a minute (per API key on ApexAPI, per account on MCP) | MCP: wait the Retry-After seconds. CLI: a wait up to 60 s was already retried; a longer one is reported with its Retry-After: tell the user when to try again |
 | `insufficient_credits` (CLI exit 5) | The hosted balance cannot cover the job | Check `apex_scrapy_credit_balance` or `scrawl balance` and tell the user |
 | `browser_unavailable` (CLI exit 5) | Browser rendering is not available | Scrape with the static engine |
 | `unauthorized` or `forbidden` (CLI exit 3) | Key or scope problem | Load the setup skill |

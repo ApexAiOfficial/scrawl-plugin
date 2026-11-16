@@ -63,7 +63,7 @@ for the internet, and never set it in a command).
 
 If the CLI is missing, tell the user how to install it and let them decide: the `scrawl` command ships with
 the Scrawl Python SDK, installed from its repository, for example
-`pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.1#subdirectory=python"` (or `pip install` of the
+`pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.3#subdirectory=python"` (or `pip install` of the
 same address inside a virtual environment, not into the user's project). Until the SDK's own documentation
 names a PyPI package, install it only from that repository; a PyPI package named `scrawl` is an unrelated
 project. Ask before installing anything.
@@ -125,6 +125,13 @@ scrawl proxy test                               # one real HTTPS request through
 
 The endpoint must be a public address. A failed test names the reason (for example a provider that refused the
 credentials); tell the user, and do not retry it in a loop.
+
+For a pool of proxies instead of one (hosted accounts), and for the free `scrawl proxy health` report, read
+`references/proxy-pool.md`.
+
+**The charging rule.** A job is charged once it runs through the user's proxy, also when the target blocks it or
+answers with an error. Refunds are automatic and cover only Scrawl's own failures: a job that never started, and a
+scrape whose `outcome` is `pipeline_failed`. Say so before the first job, and never promise a refund for a block.
 
 ## 5. Set up the user's AI provider (only for JSON, extract and ask)
 

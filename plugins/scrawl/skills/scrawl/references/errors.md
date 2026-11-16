@@ -23,7 +23,7 @@ Read this when a Scrawl MCP tool or `scrawl` command fails. The same server code
 | `invalid_request` | 422 | 5 | Malformed or outside a bound | Check the arguments against the limits; fix and resend once |
 | `budget_exceeded` | 422 | 5 | The estimate is above `max_credits`; nothing was reserved | Quote again; raise the cap only with the user's agreement, or narrow the job |
 | `invalid_artifact_name`, `unsafe_artifact_path` | 422 | 5 | Not a file name from the job's artifact list | List the job's artifacts and use a listed name |
-| `rate_limited` | 429 | 5 | Too many requests for this account | MCP: wait the Retry-After seconds, then retry once. CLI: it already retried, so wait about a minute before one more attempt |
+| `rate_limited` | 429 | 5 | Too many requests: per API key on ApexAPI (the CLI), per account on MCP | MCP: wait the Retry-After seconds, then retry once. CLI: a wait up to 60 s was already retried; a longer one is raised at once with its Retry-After: tell the user when to try again |
 | `too_many_active_jobs` | 429 | 5 | The account already has its maximum of running or queued jobs; or, for a browser render, the renderer is busy (the `Fix:` text says so) | Wait for a job to finish, or cancel one with the user's agreement; a busy renderer: retry in a few seconds |
 | `internal_error` | 500 | 5 | Unexpected server failure | Retry once; then report it with the request ID |
 | `submission_failed` | 500 | 5 | An earlier submit with this idempotency key failed | List jobs, then submit again |
