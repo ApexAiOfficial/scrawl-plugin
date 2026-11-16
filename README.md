@@ -11,7 +11,7 @@ datasets, and answer questions with citations.
 | | Today |
 | --- | --- |
 | Source | Public, under the Apache License 2.0 |
-| Release | `v0.1.3`, a Git tag and a GitHub release. Pre-1.0: see [Versioning and compatibility](#versioning-and-compatibility) |
+| Release | `v0.1.4`, a Git tag and a GitHub release. Pre-1.0: see [Versioning and compatibility](#versioning-and-compatibility) |
 | Distribution | Installs from this GitHub repository, which is its own plugin marketplace for Claude Code and for Codex. It is not in Anthropic's or OpenAI's plugin directories, and not on npm or PyPI |
 | What it needs | Access to Scrawl: the endpoint and the API key ApexAi provides for your account. Scrawl's public hosted access is not open yet (there is no public sign-up or endpoint), so the plugin is useful only to someone ApexAi has already given access |
 | MCP connection | Scrawl's MCP server currently accepts only local (loopback) connections, which is why the plugin's default MCP URL is a loopback address. There is no hosted Scrawl MCP endpoint, so outside ApexAi's own environments the skills use the `scrawl` CLI |
@@ -87,7 +87,7 @@ icon, and the license files.
 
 A key holds scopes that decide which MCP tools it sees and which calls it may make. The table follows the scope
 contract published with the SDK
-([`contracts/apexapi_scopes.json`](https://github.com/ApexAiOfficial/scrawl-sdk/blob/py-v0.1.3/contracts/apexapi_scopes.json)).
+([`contracts/apexapi_scopes.json`](https://github.com/ApexAiOfficial/scrawl-sdk/blob/py-v0.1.4/contracts/apexapi_scopes.json)).
 
 | Scope | Default key | Needed for |
 | --- | --- | --- |
@@ -109,7 +109,7 @@ is not open yet). The plugin's default MCP URL is the loopback address `http://1
 1. Install from the release tag:
 
    ```bash
-   claude plugin marketplace add ApexAiOfficial/scrawl-plugin#v0.1.3
+   claude plugin marketplace add ApexAiOfficial/scrawl-plugin#v0.1.4
    claude plugin install scrawl@apexai-scrawl
    ```
 
@@ -124,7 +124,7 @@ is not open yet). The plugin's default MCP URL is the loopback address `http://1
 1. Install from the release tag:
 
    ```bash
-   codex plugin marketplace add ApexAiOfficial/scrawl-plugin --ref v0.1.3
+   codex plugin marketplace add ApexAiOfficial/scrawl-plugin --ref v0.1.4
    codex plugin add scrawl@apexai-scrawl
    ```
 
@@ -145,7 +145,7 @@ is not open yet). The plugin's default MCP URL is the loopback address `http://1
 ### Claude Code
 
 ```bash
-claude plugin marketplace add ApexAiOfficial/scrawl-plugin#v0.1.3   # pinned to the release (recommended)
+claude plugin marketplace add ApexAiOfficial/scrawl-plugin#v0.1.4   # pinned to the release (recommended)
 claude plugin install scrawl@apexai-scrawl
 ```
 
@@ -159,11 +159,11 @@ claude plugin install scrawl@apexai-scrawl
 ### Codex
 
 ```bash
-codex plugin marketplace add ApexAiOfficial/scrawl-plugin --ref v0.1.3   # pinned to the release (recommended)
+codex plugin marketplace add ApexAiOfficial/scrawl-plugin --ref v0.1.4   # pinned to the release (recommended)
 codex plugin add scrawl@apexai-scrawl
 ```
 
-To follow `main` instead, leave out `--ref v0.1.3`: `codex plugin marketplace add ApexAiOfficial/scrawl-plugin`.
+To follow `main` instead, leave out `--ref v0.1.4`: `codex plugin marketplace add ApexAiOfficial/scrawl-plugin`.
 Codex reads `.agents/plugins/marketplace.json` and `plugins/scrawl/.codex-plugin/plugin.json`, and ignores the
 Claude Code files.
 
@@ -173,7 +173,7 @@ The `scrawl` command comes with the Scrawl Python SDK, which is installed from i
 on PyPI, and the PyPI project named `scrawl` is an unrelated application.
 
 ```bash
-pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.3#subdirectory=python"
+pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.4#subdirectory=python"
 scrawl --version   # scrawl 0.1.1
 ```
 
@@ -412,8 +412,8 @@ Report a vulnerability in the Scrawl service itself the same way. The CLI and SD
 | Plugin version | `0.1.1`, the same in both host manifests |
 | Versioning | [Semantic Versioning](https://semver.org/). Before 1.0, any release may change behaviour: pin a tag. Changes are recorded in [CHANGELOG.md](CHANGELOG.md) |
 | Hosts | Verified with Claude Code 2.1.282 and Codex CLI 0.157.1. Other versions may work but are not tested |
-| `scrawl` CLI | The skills and CI use the Scrawl Python SDK at `py-v0.1.3` |
-| MCP tool contract | [`contracts/mcp_tools.json`](contracts/mcp_tools.json), identical to the contract published with scrawl-sdk `py-v0.1.3`. A later Scrawl version may add, change or remove tools |
+| `scrawl` CLI | The skills and CI use the Scrawl Python SDK at `py-v0.1.4` |
+| MCP tool contract | [`contracts/mcp_tools.json`](contracts/mcp_tools.json), identical to the contract published with scrawl-sdk `py-v0.1.4`. A later Scrawl version may add, change or remove tools |
 
 ## Update and remove
 
@@ -434,7 +434,7 @@ codex plugin remove scrawl@apexai-scrawl
 codex plugin marketplace remove apexai-scrawl
 ```
 
-A marketplace pinned to `v0.1.3` stays on that release when you update it. To move to a newer release, run the
+A marketplace pinned to `v0.1.4` stays on that release when you update it. To move to a newer release, run the
 remove commands above, add the marketplace again with the newer tag, and install the plugin again. In Claude
 Code, uninstalling the plugin (or removing its marketplace, which also uninstalls it) deletes the stored key
 and the plugin's settings, so configure it again afterwards. Codex stores no key (it stays in your
@@ -458,7 +458,7 @@ receiving the key, until you remove it.
 Run the static checks in a virtual environment (CI uses Python 3.12):
 
 ```bash
-python -m pip install pytest "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.3#subdirectory=python"
+python -m pip install pytest "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.4#subdirectory=python"
 SCRAWL_PLUGIN_REQUIRE_CLI=1 python -m pytest tests
 ```
 

@@ -5,6 +5,20 @@ and versions follow [Semantic Versioning](https://semver.org/). The version in
 `plugins/scrawl/.claude-plugin/plugin.json` and `plugins/scrawl/.codex-plugin/plugin.json` is the plugin's
 version in both hosts.
 
+## 0.1.4 (2026-11-16)
+
+Matches the scrawl-sdk release it works with (Python and TypeScript 0.1.4).
+
+### Changed
+- The crawl skill mentions a job's `warnings`: a job read by ID now carries notes about a run that still
+  succeeded, for example a crawl that made zero requests. The vendored MCP contract includes the field on
+  `apex_scrapy_get_job`.
+- The map skill handles a blocked start page: `outcome` `target_blocked` with its reason and hint. `scrawl map`
+  exits 1 and says why, and the skill tells the user instead of repeating the map.
+- The error reference states the CLI's retry rule: a Retry-After of 60 s or less is retried (in seconds or as an
+  HTTP date), and a longer one is reported at once, never retried early. This now covers gateway errors too.
+- The CI validates the skills against scrawl-sdk `py-v0.1.4`.
+
 ## 0.1.3 (2026-11-16)
 
 The plugin skips 0.1.2 so that its version matches the scrawl-sdk release it works with (Python and TypeScript
