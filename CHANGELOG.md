@@ -24,7 +24,8 @@ The plugin skips 0.1.2 so that its version matches the scrawl-sdk release it wor
 - `rate_limited` is per API key on ApexAPI and per account on MCP; the CLI retries a wait of up to 60 s itself
   and reports a longer one with its Retry-After.
 - The vendored MCP tool contract is re-synced from scrawl-sdk 0.1.3 (contract digest `sha256:050c2402…`).
-- The setup skill installs the CLI from `py-v0.1.3`.
+- The setup skill installs the CLI from `py-v0.1.3`, and CI checks every command in the skills against the CLI
+  from scrawl-sdk `py-v0.1.3` (commit `0885f66`).
 
 ## 0.1.1 (2026-11-14)
 
