@@ -5,6 +5,27 @@ and versions follow [Semantic Versioning](https://semver.org/). The version in
 `plugins/scrawl/.claude-plugin/plugin.json` and `plugins/scrawl/.codex-plugin/plugin.json` is the plugin's
 version in both hosts.
 
+## 0.1.3 (2026-11-16)
+
+The plugin skips 0.1.2 so that its version matches the scrawl-sdk release it works with (Python and TypeScript
+0.1.3).
+
+### Added
+- The setup skill covers a proxy pool (`scrawl proxy pool add|test|mode|list`, with the URL only from
+  `SCRAWL_PROXY_URL`, `--url-env` or the user's own terminal), the free `scrawl proxy health` report, and the
+  account's API keys (`scrawl keys list|revoke`; keys are made in Telegram). The overview skill routes to them.
+- The charging rule, stated before the first job: a job is charged once it runs through the user's proxy, also when
+  the target blocks it; refunds are automatic and cover only Scrawl's own failures (a job that never started, and a
+  scrape whose `outcome` is `pipeline_failed`).
+- The scrape skill reads a result's `outcome`, `block_reason`, `retry_after_s` and `hint`, and a batch's
+  `outcomes` counts.
+
+### Changed
+- `rate_limited` is per API key on ApexAPI and per account on MCP; the CLI retries a wait of up to 60 s itself
+  and reports a longer one with its Retry-After.
+- The vendored MCP tool contract is re-synced from scrawl-sdk 0.1.3 (contract digest `sha256:050c2402…`).
+- The setup skill installs the CLI from `py-v0.1.3`.
+
 ## 0.1.1 (2026-11-14)
 
 ### Added

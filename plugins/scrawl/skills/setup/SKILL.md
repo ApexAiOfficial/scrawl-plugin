@@ -63,7 +63,7 @@ for the internet, and never set it in a command).
 
 If the CLI is missing, tell the user how to install it and let them decide: the `scrawl` command ships with
 the Scrawl Python SDK, installed from its repository, for example
-`pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.1#subdirectory=python"` (or `pip install` of the
+`pipx install "git+https://github.com/ApexAiOfficial/scrawl-sdk@py-v0.1.3#subdirectory=python"` (or `pip install` of the
 same address inside a virtual environment, not into the user's project). Until the SDK's own documentation
 names a PyPI package, install it only from that repository; a PyPI package named `scrawl` is an unrelated
 project. Ask before installing anything.
@@ -125,6 +125,27 @@ scrawl proxy test                               # one real HTTPS request through
 
 The endpoint must be a public address. A failed test names the reason (for example a provider that refused the
 credentials); tell the user, and do not retry it in a loop.
+
+`scrawl proxy health` is a free advisory report on the proxy (its exit's network type and whether ordinary sites
+block it); it does not decide whether jobs may run. Datacenter exits are blocked by many sites, residential ones
+far less: the choice is the user's, and a blocked page is still charged (see the charging rule below).
+
+**A pool of proxies instead (hosted accounts).** In `pool` or `required_pool` mode, jobs leave through a pool entry
+that has passed its test; in `direct` mode (the default), through the single proxy above. The same rules apply to
+the URL: it comes from `SCRAWL_PROXY_URL` (or `--url-env NAME`) or from the user's own terminal (`--url-stdin`).
+
+```bash
+scrawl proxy pool add --label home-1            # reads SCRAWL_PROXY_URL
+scrawl proxy pool test home-1                   # an entry carries jobs only after it passes
+scrawl proxy pool mode pool                     # or required_pool; direct goes back to the single proxy
+scrawl proxy pool list                          # the mode and the entries (credentials masked)
+```
+
+`scrawl doctor` is ready in a pool mode only when an entry has passed its test.
+
+**The charging rule.** A job is charged once it runs through the user's proxy, also when the target blocks it or
+answers with an error. Refunds are automatic and cover only Scrawl's own failures: a job that never started, and a
+scrape whose `outcome` is `pipeline_failed`. Say so before the first job, and never promise a refund for a block.
 
 ## 5. Set up the user's AI provider (only for JSON, extract and ask)
 
