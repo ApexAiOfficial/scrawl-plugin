@@ -35,7 +35,8 @@ The CLI starts and follows crawls when the user already knows the target name.
 3. Follow the job: pass `wait_seconds` 60 to `apex_scrapy_get_job` (its default, 0, returns at once), or run
    `scrawl job job_123 --wait 60`. Tell the user the status between calls; never poll without a wait.
    `scrawl job` exits 0 whatever the state: read `status` in its JSON. Job states are PENDING, RUNNING,
-   COMPLETED, FAILED, CANCELLED and ORPHANED (a job the server lost track of).
+   COMPLETED, FAILED, CANCELLED and ORPHANED (a job the server lost track of). A job read by ID carries
+   `warnings` about a run that still succeeded (for example, a crawl that made zero requests): mention them.
 4. A COMPLETED crawl is indexed and published automatically as the dataset's active version. Hand
    over to the **datasets** skill to query or diff it, or the **ask** skill for questions.
 

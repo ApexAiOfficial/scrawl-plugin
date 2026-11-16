@@ -28,6 +28,8 @@ and offer to scrape the pages the user cares about.
   `scrawl job job_123 --wait 60` (exit 0 whatever the state: read `status`), and tell the user.
 - The result reports `sources` (how many URLs came from the page and from the sitemap), `truncated` (more
   URLs exist than `limit`) and `warnings` (for example, no sitemap). Mention them.
+- A blocked start page gives `outcome` `target_blocked`, with its `block_reason` and `hint`; `scrawl map` then
+  exits 1 and says why on stderr. Tell the user what blocked it and do not repeat the map.
 - The browser engine renders only the start page (the sitemap is always fetched statically), is available only
   where ApexAi has enabled it, and is worth it only when the plain map finds almost no links.
 

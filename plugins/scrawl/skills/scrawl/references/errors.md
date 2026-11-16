@@ -4,7 +4,8 @@ Read this when a Scrawl MCP tool or `scrawl` command fails. The same server code
 
 - **MCP tool error:** the text starts with `[code]`, then the message, then `Fix:` and a remedy.
 - **CLI:** stderr shows `error: [code] message (request req_…)`; the exit code is in the last column.
-  The CLI already retries rate limits and transient gateway errors (honouring Retry-After) before it gives up.
+  The CLI already retries rate limits and transient gateway errors when their Retry-After (seconds or an HTTP
+  date) is 60 s or less. A longer one is reported at once with its Retry-After, never retried early.
 
 ## API codes
 
