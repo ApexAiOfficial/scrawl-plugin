@@ -1,6 +1,6 @@
 ---
 name: datasets
-description: This skill should be used when the user asks to "list my Scrawl datasets", "query my dataset", "filter records where the price is under 20", "what fields does this dataset have", "what changed since the last crawl", "diff two dataset versions", "roll back a dataset", "quarantine a bad record", or otherwise inspect, filter or compare Scrawl dataset versions as rows. Written answers with citations belong to the ask skill.
+description: This skill should be used when the user asks to "list my Scrawl datasets", "query my dataset", "filter records where the price is under 20", "what fields does this dataset have", "what changed since the last crawl", "diff two dataset versions", "roll back a dataset", "quarantine a bad record", "remove duplicates from my dataset", "re-extract the pages", or otherwise inspect, filter or compare Scrawl dataset versions as rows. Written answers with citations belong to the ask skill.
 ---
 
 # Query and diff datasets
@@ -67,6 +67,15 @@ These change what the user and their tools see. Explain the effect and get a cle
 | Make another completed version active (roll back or forward) | `apex_scrapy_activate_dataset_version(dataset_id, version_id)` | `scrawl datasets activate ds_123 v_1` |
 | Hide a record from queries, search and ask (reversible) | `apex_scrapy_set_record_quarantine(dataset_id, record_id, quarantined, reason)` | `scrawl datasets quarantine ds_123 rec_9 --reason "duplicate"` |
 | Restore a hidden record | `apex_scrapy_set_record_quarantine(dataset_id, record_id, quarantined)` with quarantined false | `scrawl datasets release ds_123 rec_9` |
+| A new version without some records | `apex_scrapy_curate_dataset(dataset_id, operation, record_ids)` with operation `remove` | `scrawl datasets curate ds_123 remove --record-id rec_9` |
+| A new version with duplicates removed | `apex_scrapy_curate_dataset(dataset_id, operation, field)` with operation `dedupe` | `scrawl datasets curate ds_123 dedupe --field source_url` |
+| Re-render each page's markdown with other content options | `apex_scrapy_curate_dataset(dataset_id, operation, include_tags)` with operation `reextract` | `scrawl datasets curate ds_123 reextract --include-tag article` |
+| What was curated, newest first | `apex_scrapy_list_dataset_curations(dataset_id, limit)` | `scrawl datasets curations ds_123` |
+
+A curation makes a new dataset version from an existing one (the active one, or `version_id`). Nothing is
+fetched and nothing is charged. `dedupe` keeps the first record of each value of `field` (`content_hash` by
+default). `reextract` renders each page's markdown again from its saved page, with `only_main_content`,
+`include_tags` and `exclude_tags`. The result counts `records_in` and `records_out`; report both.
 
 ## Job artifacts that are not datasets
 

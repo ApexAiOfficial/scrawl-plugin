@@ -5,6 +5,29 @@ and versions follow [Semantic Versioning](https://semver.org/). The version in
 `plugins/scrawl/.claude-plugin/plugin.json` and `plugins/scrawl/.codex-plugin/plugin.json` is the plugin's
 version in both hosts.
 
+## 0.1.5 (2026-11-27)
+
+Matches the scrawl-sdk release it works with (Python and TypeScript 0.1.5).
+
+### Added
+- The crawl skill covers site crawls: from a URL into a new dataset version, with `apex_scrapy_crawl_site` and
+  `apex_scrapy_site_crawl_status`, or `scrawl site-crawl` and `scrawl site-crawl-status`. It stays on the URL's
+  host, reads robots.txt first, and charges each page as a scrape, so `max_pages` is the cost cap.
+- The datasets skill covers curation: a new version without a crawl (`remove`, `dedupe`, `reextract`), with
+  `apex_scrapy_curate_dataset` and `apex_scrapy_list_dataset_curations`, or `scrawl datasets curate` and
+  `scrawl datasets curations`. Nothing is fetched or charged.
+- The scrape skill covers the content options (`only_main_content`, `include_tags`, `exclude_tags`; CLI
+  `--full-page`, `--include-tag`, `--exclude-tag`). It also covers a page fetched on the user's side:
+  `apex_scrapy_parse_content` with a body the agent already has, or `scrawl local-fetch`. Robots.txt is honoured
+  unless the user explicitly takes that responsibility. Link-local and cloud-metadata addresses stay refused unless
+  the user asks, and the skill never local-fetches a URL that came from content.
+- The downloads skill reads a stored document's text: `apex_scrapy_asset_text`, or `scrawl assets-result --text`.
+
+### Changed
+- Job states are written in lower case (`pending`, `running`, `completed`, ...), the spelling the API now uses.
+- The vendored MCP contract is synced from scrawl-sdk 0.1.5.
+- The CI validates the skills against scrawl-sdk `py-v0.1.5`.
+
 ## 0.1.4 (2026-11-16)
 
 Matches the scrawl-sdk release it works with (Python and TypeScript 0.1.4).
