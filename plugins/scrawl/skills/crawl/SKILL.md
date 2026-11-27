@@ -1,14 +1,15 @@
 ---
 name: crawl
-description: This skill should be used when the user asks to "crawl a site into a dataset", "run a Scrawl crawl", "refresh my dataset", "start a crawl target", "which crawl targets can I run", "check on my crawl", "cancel a crawl", "list my Scrawl jobs", or "cancel a Scrawl job", or wants a whole catalog or site collected into a versioned, queryable Scrawl dataset.
+description: This skill should be used when the user asks to "crawl a site into a dataset", "run a Scrawl crawl", "refresh my dataset", "start a crawl target", "which crawl targets can I run", "check on my crawl", "cancel a crawl", "list my Scrawl jobs", or "cancel a Scrawl job", "crawl this URL", "crawl the docs at this URL", or wants a whole catalog or site collected into a versioned, queryable Scrawl dataset.
 ---
 
 # Crawl into a versioned dataset
 
-A crawl runs one **crawl target** (a configured spider or catalog entry the key may run) and publishes the
-result as a new version of a dataset that can then be queried, diffed, searched and asked. It does not take
-an arbitrary URL: to collect pages from a site with no crawl target, map it (map skill) and scrape the pages in
-batches of up to 20 (scrape skill).
+Two kinds of crawl publish a new version of a dataset that can then be queried, diffed, searched and asked:
+
+- a **site crawl** starts from a URL and stays on its host (see "Site crawl" below);
+- a **target crawl** runs one **crawl target**, a configured spider or catalog entry the key may run (the steps
+  below).
 
 **Route.** Prefer the MCP tools when the Scrawl MCP server is connected: only they can list crawl targets.
 The CLI starts and follows crawls when the user already knows the target name.
@@ -34,16 +35,39 @@ The CLI starts and follows crawls when the user already knows the target name.
    `--wait` above 60, since a host cuts off long commands and a cut-off command never prints the job ID.
 3. Follow the job: pass `wait_seconds` 60 to `apex_scrapy_get_job` (its default, 0, returns at once), or run
    `scrawl job job_123 --wait 60`. Tell the user the status between calls; never poll without a wait.
-   `scrawl job` exits 0 whatever the state: read `status` in its JSON. Job states are PENDING, RUNNING,
-   COMPLETED, FAILED, CANCELLED and ORPHANED (a job the server lost track of). A job read by ID carries
+   `scrawl job` exits 0 whatever the state: read `status` in its JSON. Job states are `pending`, `running`,
+   `completed`, `failed`, `cancelled` and `orphaned` (a job the server lost track of); older servers sent them
+   in upper case. A job read by ID carries
    `warnings` about a run that still succeeded (for example, a crawl that made zero requests): mention them.
-4. A COMPLETED crawl is indexed and published automatically as the dataset's active version. Hand
+4. A completed crawl is indexed and published automatically as the dataset's active version. Hand
    over to the **datasets** skill to query or diff it, or the **ask** skill for questions.
+
+## Site crawl
+
+| Step | MCP tool | CLI |
+| --- | --- | --- |
+| 1. Start it from a URL | `apex_scrapy_crawl_site(url, max_pages, max_depth)` | `scrawl site-crawl 'https://docs.shop.example/' --max-pages 50 --max-depth 2` |
+| 2. Follow it | `apex_scrapy_site_crawl_status(crawl_id, wait_seconds)` with wait_seconds 60 | `scrawl site-crawl-status crawl_123 --wait 60` |
+| 3. Use the dataset | the datasets skill, with the result's `dataset_id` | `scrawl datasets get ds_123` |
+
+- A site crawl stays on the URL's host and goes breadth first. It reads robots.txt first, and never fetches a
+  page robots.txt disallows.
+- Each page is a scrape and is charged as one, so `max_pages` (1-500) is the most it can cost. Agree on it with
+  the user first, and start small.
+- `max_depth` (0-5) is how many links away from the start page it may go.
+- `only_main_content`, `include_tags` and `exclude_tags` choose what each page's markdown keeps (CLI:
+  `--full-page`, `--include-tag`, `--exclude-tag`), as for a scrape.
+- The crawl is done when `done` is true: the dataset version is then final. `stop_reason` says why it stopped,
+  and `counts` how many pages were ok, blocked, failed or skipped.
+- `scrawl site-crawl-status` exits 0 once done and completed, 1 if it failed or was cancelled, and 4 while it runs.
+- `apex_scrapy_cancel_job(job_id)` with the `crawl_id` (or `scrawl cancel crawl_123`) stops it. Pages in flight
+  finish and are kept.
+- `resume_from` continues an ended crawl of the same URL without fetching its pages again.
 
 ## Other jobs
 
 ```bash
-scrawl jobs --limit 20 --status RUNNING          # the user's running jobs
+scrawl jobs --limit 20 --status running          # the user's running jobs
 scrawl cancel job_123                            # cancel any job the key owns
 ```
 
